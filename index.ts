@@ -6,6 +6,10 @@ let secuence = 0;
 
 app.use(express.json()); //middleware
 
+type Customer = {
+    id: number,
+    name: string
+}
 
 type Product = {
     id: number,
@@ -14,9 +18,27 @@ type Product = {
     stock: number
 }
 
-const products: Product[] = [
+type Item = {
+    id: number,
+    description: string,
+    price: number,
+    qty: number
+}
 
+type Sell = {
+    id: number,
+    customer: Customer,
+    items: Item[]
+}
+
+const customers: Customer[] = [
+    { id: 1, name: "Pepe" },
+    { id: 2, name: "Pepa" },
 ];
+
+const products: Product[] = [];
+
+const sells: Sell[] = [];
 
 // endPoint
 // get obtener todos los productos
@@ -78,18 +100,6 @@ app.get('/api/inventory/:description', (request: Request, response: Response) =>
     });
 });
 
-
-/*
-
-recibir parametros por la ruta 
-localhost:3000/api/inventory/papa
-
-comos hacer un post express
-- body
-- json
-
-*/
-
 // post 
 // crear nuevo producto
 app.post('/api/inventory', (request: Request, response: Response) => {
@@ -97,7 +107,7 @@ app.post('/api/inventory', (request: Request, response: Response) => {
      const _price = request.body.price;
      const _stock = request.body.stock; */
 
-    const { description, price, stock } = request.body;
+    const { description, price, stock, category } = request.body;
 
     secuence += 1;
 
@@ -158,6 +168,35 @@ app.delete('/api/inventory/:id', (request: Request, response: Response) => {
     response.json({
         msg: `Producto: ${product.description} borrado`
     });
+});
+
+
+app.post('/api/sell', (request: Request, response: Response) => {
+    const { items, customer_id } = request.body;
+
+    const customer = customers.find((c) => c.id === Number.parseInt(customer_id))
+
+    const _items: Item[] = items.map((i: Item) => {
+        const item = products.find((x) => x.id === i.id);
+
+        const newItem: Item = {
+            id: item!.id,
+            description: item!.description,
+            price: item!.price,
+            qty: i.qty
+        }
+
+        return newItem;
+    });
+
+    const venta: Sell = {
+        id: 1,
+        items: _items,
+        customer: customer!
+    }
+
+    sells.push(venta)
+    response.json(sells);
 });
 
 app.listen(port, () => console.log(`This server is running at port ${port}`));
