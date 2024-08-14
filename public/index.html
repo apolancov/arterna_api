@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Inventario</h1>
+
+    <table border="1" style="border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Descripcion</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tfoot>
+
+        </tfoot>
+
+        <tbody id="tbody">
+
+        </tbody>
+    </table>
+
+
+    <script>
+
+        const tbody = document.getElementById('tbody');
+
+        const getAllProducto = () => {
+            fetch('/api/inventory')
+                .then((response) => response.json())
+                .then((body) => {
+                    let secuence = 0;
+                    const data = body.data.forEach((item) => {
+                        secuence += 1;
+                        item.secuence = secuence;
+                    })
+                    fillTable(body.data)
+                })
+        }
+
+        const fillTable = (rows = []) => {
+
+            rows.forEach((item) => {
+                const tr = document.createElement('tr');
+
+                tr.innerHTML = `
+                <td>${item.secuence}</td>
+                <td>${item.description}</td>
+                <td>${item.price}</td>
+                <td>${item.stock}</td>
+                <td>Ver</td>`;
+
+                tbody.appendChild(tr);
+            })
+        }
+
+        getAllProducto();
+
+    </script>
+</body>
+
+</html>

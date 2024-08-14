@@ -15,6 +15,10 @@ sequences.set('customers', 0);
 sequences.set('sales', 0);
 
 app.use(express.json()); //middleware
+app.use(express.static("public"));
+
+// ruta
+app.use("/", express.static("public"));
 
 type Customer = {
     id: number,
@@ -196,7 +200,6 @@ app.delete('/api/inventory/:id', (request: Request, response: Response) => {
         msg: `Producto: ${product.description} borrado`
     });
 });
-
 
 app.post('/api/sell', (request: Request, response: Response) => {
     const { items, customer_id } = request.body;
