@@ -10,6 +10,19 @@
 <body>
     <h1>Inventario</h1>
 
+    <div>
+        <input type="text" id="description" placeholder="Description">
+        <input type="text" id="price" placeholder="Price">
+        <input type="text" id="stock" placeholder="Stock">
+    </div>
+
+    <br>
+    <div >
+        <button>Registrar</button>
+        <button>Limpiar</button>
+    </div>
+
+    <br>
     <table border="1" style="border-collapse: collapse;">
         <thead>
             <tr>
@@ -33,18 +46,23 @@
     <script>
 
         const tbody = document.getElementById('tbody');
+        const description = document.getElementById('description')
+        const price = document.getElementById('price')
+        const stock = document.getElementById('stock')
 
         const getAllProducto = () => {
             fetch('/api/inventory')
                 .then((response) => response.json())
                 .then((body) => {
+
                     let secuence = 0;
                     const data = body.data.forEach((item) => {
                         secuence += 1;
                         item.secuence = secuence;
-                    })
-                    fillTable(body.data)
-                })
+                    });
+
+                    fillTable(body.data);
+                });
         }
 
         const fillTable = (rows = []) => {
