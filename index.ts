@@ -91,9 +91,24 @@ app.get('/api/inventory/filter/:description', (request: Request, response: Respo
 app.get('/api/inventory/:id', (request: Request, response: Response) => {
     const id = request.params.id;
 
+    if (!Number.isNaN(id)) {
+        return response.status(400)
+            .json({
+                msg: `Error en la solicitud, parametro id debe ser un numero`,
+                parameter: 'id',
+                value: id
+            });
+    }
+
     const result = products.find(
         (item) => item.id === Number.parseInt(id));
 
+    if (!result) {
+        return response.status(404)
+            .json({
+                msg: "No se encontro producto con el id: " + id
+            });
+    }
     response.json({
         data: result
     });
@@ -117,8 +132,8 @@ app.post('/api/inventory', (request: Request, response: Response) => {
      const _price = request.body.price;
      const _stock = request.body.stock; */
 
-    const { description, price, stock, category } = request.body;
-
+    // desestructuracion de objetos
+    const { description, price, stock } = request.body;
 
     const current_sequence = sequences.get('products')!;
     sequences.set('products', current_sequence + 1);
