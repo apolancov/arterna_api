@@ -65,7 +65,7 @@ app.get('/api/inventory/byDescription/:description', (request: Request, response
     const result = products.find(
         (item) => item.description.toLocaleLowerCase() === description.toLocaleLowerCase());
 
-    if (result === undefined) {
+    if (!result) {
         return response.status(404)
             .json({
                 msg: "No se encontro producto con la descripcion " + description
@@ -81,7 +81,7 @@ app.get('/api/inventory/filter/:description', (request: Request, response: Respo
     const description = request.params.description;
 
     const result = products.filter(
-        (item) => item.description.toLocaleLowerCase() === description.toLocaleLowerCase());
+        (item) => item.description.toLocaleLowerCase().includes(description.toLocaleLowerCase()));
 
     response.json({
         data: result
@@ -119,7 +119,7 @@ app.post('/api/inventory', (request: Request, response: Response) => {
 
     const { description, price, stock, category } = request.body;
 
-  
+
     const current_sequence = sequences.get('products')!;
     sequences.set('products', current_sequence + 1);
 
