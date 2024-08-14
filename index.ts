@@ -2,7 +2,17 @@ import express, { Request, Response } from "express";
 
 const app = express();
 const port = 3000;
-let secuence = 0;
+
+// collections - colecciones
+// array - arreglo - lista
+// map - dictionary - diccionario - mapa
+// set - conjunto
+
+const sequences: Map<string, number> = new Map();
+sequences.set('products', 0);
+sequences.set('items', 0);
+sequences.set('customers', 0);
+sequences.set('sales', 0);
 
 app.use(express.json()); //middleware
 
@@ -38,7 +48,7 @@ const customers: Customer[] = [
 
 const products: Product[] = [];
 
-const sells: Sell[] = [];
+const sales: Sell[] = [];
 
 // endPoint
 // get obtener todos los productos
@@ -109,10 +119,12 @@ app.post('/api/inventory', (request: Request, response: Response) => {
 
     const { description, price, stock, category } = request.body;
 
-    secuence += 1;
+  
+    const current_sequence = sequences.get('products')!;
+    sequences.set('products', current_sequence + 1);
 
     const product: Product = {
-        id: secuence,
+        id: sequences.get('products')!,
         description,
         price,
         stock
@@ -195,8 +207,8 @@ app.post('/api/sell', (request: Request, response: Response) => {
         customer: customer!
     }
 
-    sells.push(venta)
-    response.json(sells);
+    sales.push(venta)
+    response.json(sales);
 });
 
 app.listen(port, () => console.log(`This server is running at port ${port}`));
