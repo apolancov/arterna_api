@@ -19,7 +19,7 @@
     <br>
     <div>
         <button id="btnSave" onclick="save()">Create</button>
-        <button>Clear</button>
+        <button onclick="reset()">Clear</button>
     </div>
 
     <br>
@@ -173,6 +173,15 @@
             } else {
                 update();
             }
+        }
+
+        const reset = () => {
+            txtDescription.value = '';
+            txtPrice.value = '';
+            txtStock.value = '';
+            btnSave.innerText = 'create';
+            isEditing = false;
+            selectedId = 0;
         }
     </script>
 </body>
