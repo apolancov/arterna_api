@@ -12,8 +12,8 @@
 
     <div>
         <input type="text" id="description" placeholder="Description">
-        <input type="text" id="price" placeholder="Price">
-        <input type="text" id="stock" placeholder="Stock">
+        <input type="text" value="20" id="price" placeholder="Price">
+        <input type="text" value="1000" id="stock" placeholder="Stock">
     </div>
 
     <br>
@@ -46,6 +46,7 @@
 
     <script>
         //DOM
+        const baseUrl = 'api/inventory';
         const tbody = document.getElementById('tbody');
         const txtDescription = document.getElementById('description')
         const txtPrice = document.getElementById('price')
@@ -54,9 +55,11 @@
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
+        let selectedId = 0;
 
-        const getAllProducto = () => {
-            fetch('/api/inventory')
+
+        const getAllProducts = () => {
+            fetch(baseUrl)
                 .then((response) => response.json())
                 .then((body) => {
 
@@ -81,7 +84,9 @@
                 <td>${item.description}</td>
                 <td>${item.price}</td>
                 <td>${item.stock}</td>
-                <td>Ver</td>`;
+                <td>
+                    <button onClick="deleteElement('${item.id}')">X</button>
+                </td>`;
 
                 tbody.appendChild(tr);
             })
@@ -99,17 +104,50 @@
                 stock
             });
 
-            fetch('api/inventory', {
+            fetch(baseUrl, {
                 method: "POST",
                 headers,
                 body
             })
-                .then((response) => getAllProducto())
+                .then((response) => getAllProducts())
                 .catch(console.log)
-
-
         }
-        getAllProducto();
+
+        const deleteElement = (id) => {
+            const isYes = prompt('Realmente desea borrar este producto?\n1-yes\n2-no');
+
+            if (isYes && isYes === '1') {
+                fetch(`${baseUrl}/${id}`, {
+                    method: "DELETE",
+                    headers
+                })
+                    .then((response) => getAllProducts())
+                    .catch(console.log)
+            }
+        }
+
+
+        const update = () => {
+            const description = txtDescription.value;
+            const price = txtPrice.value;
+            const stock = txtStock.value;
+
+            // serialize
+            const body = JSON.stringify({
+                description,
+                price,
+                stock
+            });
+
+            fetch(`${baseUrl}/${selectedId}`, {
+                method: "PUT",
+                headers,
+                body
+            })
+                .then((response) => getAllProducts())
+                .catch(console.log)
+        }
+        getAllProducts();
 
     </script>
 </body>

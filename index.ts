@@ -29,7 +29,8 @@ type Product = {
     id: number,
     description: string,
     price: number,
-    stock: number
+    stock: number,
+    isDelete?: boolean
 }
 
 type Item = {
@@ -59,7 +60,7 @@ const sales: Sell[] = [];
 app.get('/api/inventory', (request: Request, response: Response) => {
 
     response.json({
-        data: products
+        data: products.filter((p) => !p.isDelete)
     });
 });
 
@@ -82,8 +83,8 @@ app.get('/api/inventory/byDescription/:description', (request: Request, response
 });
 
 app.get('/api/inventory/filter/:description', (request: Request, response: Response) => {
-    
-    
+
+
     const description = request.params.description;
 
     const result = products.filter(
@@ -132,16 +133,16 @@ app.get('/api/inventory/:description', (request: Request, response: Response) =>
 });
 
 app.get('/api/inventory/:id/categories', (request: Request, response: Response) => {
-    const { category , page, q } = request.query;
+    const { category, page, q } = request.query;
 
-    if(category){
-
-    }
-    
-    if(page){
+    if (category) {
 
     }
-    
+
+    if (page) {
+
+    }
+
     response.json(request.query);
 });
 
@@ -211,6 +212,8 @@ app.delete('/api/inventory/:id', (request: Request, response: Response) => {
 
     const productIndex = products.findIndex((item) => item.id === Number.parseInt(id));
     products.splice(productIndex, 1);
+
+    // product.isDelete = true;
 
     response.json({
         msg: `Producto: ${product.description} borrado`
