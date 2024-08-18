@@ -82,6 +82,8 @@ app.get('/api/inventory/byDescription/:description', (request: Request, response
 });
 
 app.get('/api/inventory/filter/:description', (request: Request, response: Response) => {
+    
+    
     const description = request.params.description;
 
     const result = products.filter(
@@ -127,6 +129,20 @@ app.get('/api/inventory/:description', (request: Request, response: Response) =>
     response.json({
         data: result
     });
+});
+
+app.get('/api/inventory/:id/categories', (request: Request, response: Response) => {
+    const { category , page, q } = request.query;
+
+    if(category){
+
+    }
+    
+    if(page){
+
+    }
+    
+    response.json(request.query);
 });
 
 // post 

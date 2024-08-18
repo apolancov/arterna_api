@@ -17,13 +17,13 @@
     </div>
 
     <br>
-    <div >
-        <button>Registrar</button>
-        <button>Limpiar</button>
+    <div>
+        <button onclick="create()">Create</button>
+        <button>Clear</button>
     </div>
 
     <br>
-    <table border="1" style="border-collapse: collapse;">
+    <table style="width: 450px;" border="1" style="border-collapse: collapse;">
         <thead>
             <tr>
                 <th>#</th>
@@ -43,22 +43,27 @@
     </table>
 
 
-    <script>
 
+    <script>
+        //DOM
         const tbody = document.getElementById('tbody');
-        const description = document.getElementById('description')
-        const price = document.getElementById('price')
-        const stock = document.getElementById('stock')
+        const txtDescription = document.getElementById('description')
+        const txtPrice = document.getElementById('price')
+        const txtStock = document.getElementById('stock')
+
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
 
         const getAllProducto = () => {
             fetch('/api/inventory')
                 .then((response) => response.json())
                 .then((body) => {
 
-                    let secuence = 0;
+                    let sequence = 0;
                     const data = body.data.forEach((item) => {
-                        secuence += 1;
-                        item.secuence = secuence;
+                        sequence += 1;
+                        item.sequence = sequence;
                     });
 
                     fillTable(body.data);
@@ -66,12 +71,13 @@
         }
 
         const fillTable = (rows = []) => {
+            tbody.innerHTML = '';
 
             rows.forEach((item) => {
                 const tr = document.createElement('tr');
 
                 tr.innerHTML = `
-                <td>${item.secuence}</td>
+                <td>${item.sequence}</td>
                 <td>${item.description}</td>
                 <td>${item.price}</td>
                 <td>${item.stock}</td>
@@ -81,6 +87,28 @@
             })
         }
 
+        const create = () => {
+            const description = txtDescription.value;
+            const price = txtPrice.value;
+            const stock = txtStock.value;
+
+            // serialize
+            const body = JSON.stringify({
+                description,
+                price,
+                stock
+            });
+
+            fetch('api/inventory', {
+                method: "POST",
+                headers,
+                body
+            })
+                .then((response) => getAllProducto())
+                .catch(console.log)
+
+
+        }
         getAllProducto();
 
     </script>
