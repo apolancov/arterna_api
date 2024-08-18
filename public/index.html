@@ -40,9 +40,19 @@
         <tbody id="tbody">
 
         </tbody>
+
+
     </table>
-
-
+    <img src="" id="img" alt="">
+    <script>
+        fetch('https://pokeapi.co/api/v2/pokemon/pikachu')
+            .then((response) => response.json())
+            .then(body => {
+                console.log(body)
+                console.log(body.sprites.front_default)
+                document.getElementById('img').src = body.sprites.front_default;
+            })
+    </script>
 
     <script>
         //DOM
