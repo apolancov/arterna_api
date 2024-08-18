@@ -96,9 +96,10 @@ app.get('/api/inventory/filter/:description', (request: Request, response: Respo
 });
 
 app.get('/api/inventory/:id', (request: Request, response: Response) => {
-    const id = request.params.id;
+    const _id = request.params.id;
+    const id = Number.parseInt(_id);
 
-    if (!Number.isNaN(id)) {
+    if (Number.isNaN(id)) {
         return response.status(400)
             .json({
                 msg: `Error en la solicitud, parametro id debe ser un numero`,
@@ -108,7 +109,7 @@ app.get('/api/inventory/:id', (request: Request, response: Response) => {
     }
 
     const result = products.find(
-        (item) => item.id === Number.parseInt(id));
+        (item) => item.id === id);
 
     if (!result) {
         return response.status(404)

@@ -18,7 +18,7 @@
 
     <br>
     <div>
-        <button onclick="create()">Create</button>
+        <button id="btnSave" onclick="save()">Create</button>
         <button>Clear</button>
     </div>
 
@@ -51,11 +51,13 @@
         const txtDescription = document.getElementById('description')
         const txtPrice = document.getElementById('price')
         const txtStock = document.getElementById('stock')
+        const btnSave = document.getElementById('btnSave')
 
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
         let selectedId = 0;
+        let isEditing = false;
 
 
         const getAllProducts = () => {
@@ -85,6 +87,7 @@
                 <td>${item.price}</td>
                 <td>${item.stock}</td>
                 <td>
+                    <button onClick="editElement('${item.id}')">E</button>
                     <button onClick="deleteElement('${item.id}')">X</button>
                 </td>`;
 
@@ -126,6 +129,20 @@
             }
         }
 
+        const editElement = (id) => {
+            fetch(`${baseUrl}/${id}`)
+                .then((response) => response.json())
+                .then((body) => {
+
+                    txtDescription.value = body.data.description;
+                    txtPrice.value = body.data.price;
+                    txtStock.value = body.data.stock;
+                    selectedId = id;
+                    btnSave.innerText = "save";
+                    isEditing = true;
+                });
+        }
+
 
         const update = () => {
             const description = txtDescription.value;
@@ -149,6 +166,14 @@
         }
         getAllProducts();
 
+
+        const save = () => {
+            if (!isEditing) {
+                create();
+            } else {
+                update();
+            }
+        }
     </script>
 </body>
 
